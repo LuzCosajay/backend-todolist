@@ -2,34 +2,55 @@ var express = require('express');
 var router = express.Router();
 
 let goals = [
-  { id: 1, name: 'Goal 1', description: 'Description for Goal 1', duedate: '2024-08-01' },
-  { id: 2, name: 'Goal 2', description: 'Description for Goal 2', duedate: '2024-08-02' }
+  { id_: 1, name: 'Goal 1', description: 'Description for Goal 1', duedate: '2024-08-01' },
+  { id_: 2, name: 'Goal 2', description: 'Description for Goal 2', duedate: '2024-08-02' }
 ];
 
 router.get('/getGoals', (req, res) => {
-  res.json(goals);
+  res.status(200).json(goals);
 });
 
 router.post('/addGoal', (req, res) => {
+
   const { name, description, duedate } = req.body;
 
-  const newGoal = {
-    id: Math.floor(Math.random() * 1000) + 1,
-    name,
-    description,
-    duedate
-  };
+  if(name && description && duedate) {
 
-  goals.push(newGoal);
-  res.json(newGoal);
+    const newGoal = {
+      id_: Math.floor(Math.random() * 1000) + 1,
+      name,
+      description,
+      duedate
+    };
+
+    goals.push(newGoal);
+
+    res.status(200).json(newGoal);
+
+  } else {
+
+    res.status(400).json({ error: 'Please provide all required fields' });
+
+  }
+
 });
 
 router.delete('/removeGoal/:id', (req, res) => {
-  const id = parseInt(req.params.id);
 
-  goals = goals.filter(goal => goal.id !== id);
+  if(req.params && req.params.id && !isNaN(req.params.id)) {
 
-  res.json({ message: `Goal with id ${id} removed` });
+    const goalId = parseInt(req.params.id);
+
+    goals = goals.filter(goal => goal.id_ !== goalId);
+
+    res.status(200).json({ message: `Goal with id ${goalId} deleted` });
+
+  } else {
+
+    res.status(400).json({ error: 'Please provide a valid goal id' });
+
+  }
+
 });
 
 module.exports = router;

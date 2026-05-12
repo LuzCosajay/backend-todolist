@@ -11,8 +11,6 @@ var goalsRouter = require('./routes/goals');
 
 var app = express();
 
-var API_KEY = '123456';
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -23,16 +21,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Middleware de autorización
-app.use(function(req, res, next) {
-  if (req.headers.authorization && req.headers.authorization === API_KEY) {
+app.use((req, res, next) => {
+  if (req.headers.authorization && req.headers.authorization === '123456') {
     next();
   } else {
     res.status(401).json({ error: 'Unauthorized' });
   }
 });
 
-// RUTAS
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/tasks', tasksRouter);

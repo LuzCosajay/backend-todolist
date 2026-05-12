@@ -1,34 +1,38 @@
-# Backend - Semana 3
+# Backend - Semana 4
 
 ## Descripción
-API con Node.js y Express para manejar tareas y metas. Permite consultar, agregar y eliminar registros.
+
+API desarrollada con Node.js y Express para gestionar tareas y metas.
+
+## Funcionalidades
+
+- Obtener tareas y metas
+- Agregar tareas y metas
+- Eliminar tareas y metas
+- Validación de autorización
+- Manejo de errores HTTP
+
+## Códigos HTTP utilizados
+
+- 200 OK
+- 400 Bad Request
+- 401 Unauthorized
 
 ## Tecnologías
+
 - Node.js
 - Express
 
-## Endpoints
-
-### Tasks
-- GET /tasks/getTasks
-- POST /tasks/addTask
-- DELETE /tasks/removeTask/:id
-
-### Goals
-- GET /goals/getGoals
-- POST /goals/addGoal
-- DELETE /goals/removeGoal/:id
-
 ## Ejecución
+
+Instalar dependencias:
 
 ```bash
 npm install
-npm start
 ```
 
-Servidor en:
-http://localhost:3000
+Ejecutar servidor:
 
-## Notas
-- Los endpoints requieren enviar un header de autorización (el mismo usado en clase).
-- Los datos se manejan en memoria.
+```bash
+npm start
+```
