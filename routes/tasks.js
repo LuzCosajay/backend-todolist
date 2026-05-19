@@ -1,56 +1,60 @@
 var express = require('express');
 var router = express.Router();
+var TaskSchema = require('../models/task');
 
-let tasks = [
-  { id_: 1, name: 'Task 1', description: 'Description for Task 1', duedate: '2024-07-01' },
-  { id_: 2, name: 'Task 2', description: 'Description for Task 2', duedate: '2024-07-02' }
-];
-
-router.get('/getTasks', (req, res) => {
-  res.status(200).json(tasks);
+router.get('/getTasks', async function(req, res, next) {
+  try {
+    const tasks = await TaskSchema.find({});
+    return res.status(200).json(tasks);
+  } catch (err) {
+    return res.status(500).json({
+      error: err.message || 'Error fetching tasks'
+    });
+  }
 });
 
-router.post('/addTask', (req, res) => {
+router.post('/addTask', async function(req, res, next) {
+  if (req.body && req.body.name && req.body.description && req.body.duedate) {
+    try {
+      const task = new TaskSchema({
+        name: req.body.name,
+        description: req.body.description,
+        duedate: new Date(req.body.duedate)
+      });
 
-  const { name, description, duedate } = req.body;
+      const response = await task.save();
 
-  if(name && description && duedate) {
-
-    const newTask = {
-      id_: Math.floor(Math.random() * 1000) + 1,
-      name,
-      description,
-      duedate
-    };
-
-    tasks.push(newTask);
-
-    res.status(200).json(newTask);
-
+      return res.status(200).json(response);
+    } catch (err) {
+      return res.status(500).json({
+        error: err.message || 'Error saving task'
+      });
+    }
   } else {
-
-    res.status(400).json({ error: 'Please provide all required fields' });
-
+    return res.status(400).json({
+      error: 'Missing required fields: name, description, duedate'
+    });
   }
-
 });
 
-router.delete('/removeTask/:id', (req, res) => {
+router.delete('/removeTask/:id', async function(req, res, next) {
+  if (req.params && req.params.id) {
+    try {
+      await TaskSchema.findByIdAndDelete(req.params.id);
 
-  if(req.params && req.params.id && !isNaN(req.params.id)) {
-
-    const taskId = parseInt(req.params.id);
-
-    tasks = tasks.filter(task => task.id_ !== taskId);
-
-    res.status(200).json({ message: `Task with id ${taskId} deleted` });
-
+      return res.status(200).json({
+        message: 'Task removed successfully'
+      });
+    } catch (err) {
+      return res.status(500).json({
+        error: err.message || 'Error removing task'
+      });
+    }
   } else {
-
-    res.status(400).json({ error: 'Please provide a valid task id' });
-
+    return res.status(400).json({
+      error: 'Missing required fields: id'
+    });
   }
-
 });
 
 module.exports = router;

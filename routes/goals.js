@@ -1,56 +1,60 @@
 var express = require('express');
 var router = express.Router();
+var GoalSchema = require('../models/goal');
 
-let goals = [
-  { id_: 1, name: 'Goal 1', description: 'Description for Goal 1', duedate: '2024-08-01' },
-  { id_: 2, name: 'Goal 2', description: 'Description for Goal 2', duedate: '2024-08-02' }
-];
-
-router.get('/getGoals', (req, res) => {
-  res.status(200).json(goals);
+router.get('/getGoals', async function(req, res, next) {
+  try {
+    const goals = await GoalSchema.find({});
+    return res.status(200).json(goals);
+  } catch (err) {
+    return res.status(500).json({
+      error: err.message || 'Error fetching goals'
+    });
+  }
 });
 
-router.post('/addGoal', (req, res) => {
+router.post('/addGoal', async function(req, res, next) {
+  if (req.body && req.body.name && req.body.description && req.body.duedate) {
+    try {
+      const goal = new GoalSchema({
+        name: req.body.name,
+        description: req.body.description,
+        duedate: new Date(req.body.duedate)
+      });
 
-  const { name, description, duedate } = req.body;
+      const response = await goal.save();
 
-  if(name && description && duedate) {
-
-    const newGoal = {
-      id_: Math.floor(Math.random() * 1000) + 1,
-      name,
-      description,
-      duedate
-    };
-
-    goals.push(newGoal);
-
-    res.status(200).json(newGoal);
-
+      return res.status(200).json(response);
+    } catch (err) {
+      return res.status(500).json({
+        error: err.message || 'Error saving goal'
+      });
+    }
   } else {
-
-    res.status(400).json({ error: 'Please provide all required fields' });
-
+    return res.status(400).json({
+      error: 'Missing required fields: name, description, duedate'
+    });
   }
-
 });
 
-router.delete('/removeGoal/:id', (req, res) => {
+router.delete('/removeGoal/:id', async function(req, res, next) {
+  if (req.params && req.params.id) {
+    try {
+      await GoalSchema.findByIdAndDelete(req.params.id);
 
-  if(req.params && req.params.id && !isNaN(req.params.id)) {
-
-    const goalId = parseInt(req.params.id);
-
-    goals = goals.filter(goal => goal.id_ !== goalId);
-
-    res.status(200).json({ message: `Goal with id ${goalId} deleted` });
-
+      return res.status(200).json({
+        message: 'Goal removed successfully'
+      });
+    } catch (err) {
+      return res.status(500).json({
+        error: err.message || 'Error removing goal'
+      });
+    }
   } else {
-
-    res.status(400).json({ error: 'Please provide a valid goal id' });
-
+    return res.status(400).json({
+      error: 'Missing required fields: id'
+    });
   }
-
 });
 
 module.exports = router;
