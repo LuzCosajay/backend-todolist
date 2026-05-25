@@ -1,8 +1,8 @@
-# Backend - Semana 5
+# Backend - Semana 6
 
 ## Descripción
 
-API desarrollada con Node.js, Express y MongoDB para gestionar tareas y metas.
+Backend desarrollado con Node.js, Express y MongoDB Atlas para gestionar tareas y metas.
 
 ## Tecnologías utilizadas
 
@@ -10,29 +10,28 @@ API desarrollada con Node.js, Express y MongoDB para gestionar tareas y metas.
 - Express
 - MongoDB Atlas
 - Mongoose
-- Thunder Client
+- CORS
 
 ## Funcionalidades
 
-### Tasks
 - Obtener tareas
 - Agregar tareas
 - Eliminar tareas
-
-### Goals
 - Obtener metas
 - Agregar metas
 - Eliminar metas
+- Integración con frontend
+- Persistencia de datos con MongoDB
 
-## Configuración
+## Instalación
 
-### Instalar dependencias
+Instalar dependencias:
 
 ```bash
 npm install
 ```
 
-### Ejecutar servidor
+Ejecutar servidor:
 
 ```bash
 npm start
@@ -44,6 +43,7 @@ Crear un archivo `.env` con:
 
 ```env
 MONGO_URI=tu_conexion_mongodb
+DATABASE=MONGODB
 ```
 
 ## Autor
